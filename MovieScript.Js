@@ -1,30 +1,57 @@
-function getMovieCard(poster, title) {
-  return `<div id="Movie">
-      <div id="FirstMovie"><img src="${
-        poster ||
-        "https://placehold.jp/191b38/ffffff/160x192.png?text=Loading..."
-      }" style="width: 10rem; height: 12rem; cursor:pointer"></div>
-      <p id="Name">${title}</p>
-  </div>`;
+function movieCard(data) {
+  const list = data.d;
+  const movieContainer = document.getElementById("Movie");
+  movieContainer.innerHTML = "";
+  list.map((item) => {
+    const title = item.l;
+    const poster = item?.i?.imageUrl;
+    const movieDiv = document.createElement("div");
+    movieDiv.id = "Movie";
+    const image = document.createElement("img");
+    image.src =
+      poster ||
+      "https://placehold.jp/191b38/ffffff/160x192.png?text=Loading...";
+    image.style.width = "8rem";
+    image.style.height = "10rem";
+    image.style.cursor = "pointer";
+    image.style.margin = "2rem";
+    image.classList.add("hover-image");
+    movieDiv.appendChild(image);
+
+    const titleParagraph = document.createElement("p");
+    titleParagraph.id = "Name";
+    titleParagraph.textContent = title;
+    movieDiv.appendChild(titleParagraph);
+
+    movieContainer.appendChild(movieDiv);
+  });
 }
 
-// function appendMovieCardListToSelector(list = [], selector) {
-//   if (!selector) throw new Error("Selector should be passed");
-//   list.map((item) => {
-//     try {
-//       const selectedEl = document.getElementById(selector);
-//       if (!selectedEl)
-//         throw new Error(
-//           "Couldn't find the element with the selector" + selector
-//         );
-//       selectedEl.innerHTML += getMovieCard(item?.l, item?.i?.imageUrl);
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   });
-// }
-
-function fetchMovieApi() {
+function tvSeries(data) {
+  const list = data.d;
+  const tvSeriesList = list.filter((item) => item.q === "TV series");
+  document.getElementById("Movie").setHTML = "";
+  movieCard({ d: tvSeriesList });
+}
+function Vid(data) {
+  const list = data.d;
+  const videoList = list.filter((item) => item.q === "video");
+  document.getElementById("Movie").setHTML = "";
+  movieCard({ d: videoList });
+}
+function tvMovie(data) {
+  const list = data.d;
+  const tvMovieList = list.filter((item) => item.q === "TV movie");
+  document.getElementById("Movie").setHTML = "";
+  movieCard({ d: tvMovieList });
+}
+function feature(data) {
+  const list = data.d;
+  const featureList = list.filter((item) => item.q === "feature");
+  document.getElementById("Movie").setHTML = "";
+  movieCard({ d: featureList });
+}
+function fetchData() {
   fetch(
     "https://online-movie-database.p.rapidapi.com/auto-complete?q=game%20of%20thr",
     {
@@ -37,28 +64,33 @@ function fetchMovieApi() {
   )
     .then((response) => response.json())
     .then((data) => {
-      const data = data.d;
-      const poster = getMovieCard(poster, title);
-      // appendMovieCardListToSelector(data.d, "d");
+      movieCard(data);
+      document.getElementById("home").addEventListener("click", () => {
+        movieCard(data);
+      });
+
+      document.getElementById("tvseries").addEventListener("click", () => {
+        tvSeries(data);
+      });
+      document.getElementById("vid").addEventListener("click", () => {
+        Vid(data);
+      });
+      document.getElementById("tvmovie").addEventListener("click", () => {
+        tvMovie(data);
+      });
+      document.getElementById("feature").addEventListener("click", () => {
+        feature(data);
+      });
     })
     .catch((err) => {
       console.error(err);
     });
 }
-
-function tvSeries(list = []) {
-  list.map((item) => {
-    getMovieCard(poster, title);
-    if (genre === "TV series") {
-      const movie = getMovieCard(poster, title);
-      document.getElementById("Movie").innerHTML += movie;
-    } else {
-      return 0;
-    }
-  });
-}
-
-document.getElementById("tvSeries").addEventListener("click", function () {
-  fetchMovieApi();
-  tvSeries(list);
-});
+const handleClick = (id) => {
+  const elements = document.getElementsByTagName("li");
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].classList.remove("active");
+  }
+  document.getElementById(id).classList.add("active");
+};
+document.addEventListener("DOMContentLoaded", fetchData);
