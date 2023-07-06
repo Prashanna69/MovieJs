@@ -2,8 +2,9 @@ function movieCard(data) {
   const list = data.d;
   const movieContainer = document.getElementById("Movie");
   movieContainer.innerHTML = "";
-  list.map((item) => {
-    const title = item.l;
+  list?.map((item) => {
+    const id = item?.id;
+    const title = item?.l;
     const poster = item?.i?.imageUrl;
     const movieDiv = document.createElement("div");
     movieDiv.id = "Movie";
@@ -24,6 +25,13 @@ function movieCard(data) {
     movieDiv.appendChild(titleParagraph);
 
     movieContainer.appendChild(movieDiv);
+    movieDiv.addEventListener("click", () => {
+      window.location.href = `detail.html?movie=${id}`;
+    });
+    movieDiv.addEventListener("click", () => {
+      const selectedMovieTitle = id;
+      movieDetail(data, selectedMovieTitle);
+    });
   });
 }
 
@@ -57,7 +65,7 @@ function fetchData() {
     {
       method: "GET",
       headers: {
-        "X-RapidAPI-Key": "025903040fmsh159f6b6795b1165p126bcdjsnb518fb5e7a01",
+        "X-RapidAPI-Key": "571b4bc263msh3d1dc73d8561fa7p17192fjsn5b580280960a",
         "X-RapidAPI-Host": "online-movie-database.p.rapidapi.com",
       },
     }
@@ -93,4 +101,7 @@ const handleClick = (id) => {
   }
   document.getElementById(id).classList.add("active");
 };
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("home").classList.add("active");
+});
 document.addEventListener("DOMContentLoaded", fetchData);

@@ -80,18 +80,6 @@ hr {
   display: flex;
   flex-flow: column wrap;
 }
-#FirstMovie {
-  display: block;
-  width: 10rem;
-  /* border: dashed black; */
-  margin: 2rem;
-  height: 12rem;
-  margin-left: 5rem;
-}
-#FirstMovie:hover {
-  box-shadow: 2px 5px 5px black;
-  transition: 1sec;
-}
 
 #Movie p {
   display: block;
